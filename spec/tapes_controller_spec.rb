@@ -2,15 +2,15 @@ describe "Tapes Controller" do
   before do
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     @window.rootViewController = TapesController.alloc.initWithNibName(nil, bundle:nil)
-    @window.rootViewController.tapes = ['tape 1', 'tape 2', 'tape 3']
+    @window.rootViewController.tapes = []
+    5.times do |n|
+      tape = Tape.new(name: "Tape #{n}", url: "http://www.foo.bar/tape-#{n}") 
+      @window.rootViewController.tapes << tape
+    end
     @window.makeKeyAndVisible
   end
   
   tests TapesController
-
-  #before do
-    #@app = UIApplication.sharedApplication
-  #end
 
   it "should have title 'Tapes'" do
      @window.rootViewController.title.should == "Tapes"
@@ -21,7 +21,7 @@ describe "Tapes Controller" do
   end
 
   it "has one cell for every tape" do
-    views(UITableViewCell).count.should == 3
-    view('tape 1').should.not == nil
+    views(UITableViewCell).count.should == 5
+    view('Tape 1').should.not == nil
   end
 end

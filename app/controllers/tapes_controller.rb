@@ -1,4 +1,5 @@
 class TapesController < UIViewController
+  include BubbleWrap::KVO
   attr_accessor :tapes
 
   def viewDidLoad
@@ -8,7 +9,7 @@ class TapesController < UIViewController
     @table.autoresizingMask = UIViewAutoresizingFlexibleHeight
     self.view.addSubview(@table)
     @table.dataSource = self
-    #@tapes = ['tape 1', 'tape 2', 'tape 3']
+
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
@@ -20,7 +21,7 @@ class TapesController < UIViewController
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier)
     cell ||= UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
     
-    cell.textLabel.text = @tapes[indexPath.row]
+    cell.textLabel.text = @tapes[indexPath.row].name
     cell
   end
 
