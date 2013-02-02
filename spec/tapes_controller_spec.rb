@@ -8,4 +8,8 @@ describe "Tapes Controller" do
   it "should have title 'Tapes'" do
     controller.title.should == "Tapes"
   end
+
+  it "should have one UITableView" do
+    views(UITableView).count.should == 1
+  end
 end
