@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
-require 'motion-cocoapods'
+#require 'motion-cocoapods'
 require 'wakizashi'
 require 'bubble-wrap'
 
