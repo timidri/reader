@@ -1,5 +1,5 @@
 class Tape
-  PROPERTIES = [:name, :url]
+  PROPERTIES = [:name, :url, :city, :convention, :date, :downloads]
   PROPERTIES.each do |prop|
     attr_accessor prop
   end
