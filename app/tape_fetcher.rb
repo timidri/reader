@@ -42,7 +42,7 @@ class TapeFetcher
           when /view-field-node-title/
             name_cells = cell.elementsForName("a")
             if name_cells != nil
-              tape.name = name_cells.first
+              tape.name = name_cells.first.stringValue
             end
             # puts "found name = #{tape.name}"
           when /city-field/
