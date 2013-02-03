@@ -5,6 +5,7 @@ class TapesController < UIViewController
   def viewDidLoad
     super
     self.title = "Tapes"
+    self.tapes = TapeFetcher.new.fetch_tapes
     @table = UITableView.alloc.initWithFrame(self.view.bounds)
     @table.autoresizingMask = UIViewAutoresizingFlexibleHeight
     self.view.addSubview(@table)
