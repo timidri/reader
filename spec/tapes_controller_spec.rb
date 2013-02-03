@@ -4,7 +4,7 @@ describe "Tapes Controller" do
     @window.rootViewController = TapesController.alloc.initWithNibName(nil, bundle:nil)
     @window.rootViewController.tapes = []
     5.times do |n|
-      tape = Tape.new(name: "Tape #{n}", url: "http://www.foo.bar/tape-#{n}") 
+      tape = Tape.new(name: "Tape #{n}", speaker: "Speaker #{n}", url: "http://www.foo.bar/tape-#{n}") 
       @window.rootViewController.tapes << tape
     end
     @window.makeKeyAndVisible
