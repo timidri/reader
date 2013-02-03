@@ -1,8 +1,8 @@
 class TapeFetcher
 
-	def initialize
+  def initialize
     @host="www.aaspeakers.org"
-		@url="http://#{@host}/AA_Speaker_Tapes"
+    @url="http://#{@host}/AA_Speaker_Tapes"
     @debug=false
 	end
 
@@ -28,55 +28,53 @@ class TapeFetcher
   end
 
   def convert_html_to_tapes html 
-     	# puts "convert_html_to_tapes" 
-      doc = Wakizashi::HTML(replaceHtmlEntities html)
-      rows = doc.xpath("//div[@class='view-content view-content-Speaker-Tapes']//tr")
-      # puts "rows size: #{rows.size}"
-      @tapes = []
-      rows.each do |row| 
-        headers = row.elementsForName("th")
-        if headers != nil # skip table headers row
-          next
-        end
-        tape = Tape.new
-        details_uri = nil
-        # puts "row: #{row.to_html}"
-        cells = row.elementsForName("td")
-        # puts "cells size: #{cells.size}"
-        cells.each do |cell|
-          # puts "cell to_html: #{cell.to_html}"
-          case cell['class']
-          when /view-field-node-title/
-            name_cells = cell.elementsForName("a")
-            if name_cells != nil
-              tape.speaker = name_cells.first.stringValue
-              details_uri = name_cells.first['href']
-            end
-            # puts "found name = #{tape.name}"
-          when /city-field/
-            tape.city = cell.stringValue
-            # puts "found city = #{tape.city}"
-          when /convention-field/
-            tape.venue = cell.stringValue
-            # puts "found convention = #{tape.convention}"
-          when /date-field/
-            date_cells = cell.elementsForName("span")
-            if date_cells != nil
-              tape.date = date_cells.first.stringValue
-            end
-            # puts "found date = #{tape.date}"
-          when /downloads-field/
-            tape.downloads = cell.stringValue
-            # puts "found downloads = #{tape.downloads}"
+    # puts "convert_html_to_tapes" 
+    doc = Wakizashi::HTML(replaceHtmlEntities html)
+    rows = doc.xpath("//div[@class='view-content view-content-Speaker-Tapes']//tr")
+    # puts "rows size: #{rows.size}"
+    @tapes = []
+    rows.each do |row| 
+      headers = row.elementsForName("th")
+      next if headers != nil # skip table headers row
+      tape = Tape.new
+      details_uri = nil
+      # puts "row: #{row.to_html}"
+      cells = row.elementsForName("td")
+      # puts "cells size: #{cells.size}"
+      cells.each do |cell|
+        # puts "cell to_html: #{cell.to_html}"
+        case cell['class']
+        when /view-field-node-title/
+          name_cells = cell.elementsForName("a")
+          if name_cells != nil
+            tape.speaker = name_cells.first.stringValue
+            details_uri = name_cells.first['href']
           end
+          # puts "found name = #{tape.name}"
+        when /city-field/
+          tape.city = cell.stringValue
+          # puts "found city = #{tape.city}"
+        when /convention-field/
+          tape.venue = cell.stringValue
+          # puts "found convention = #{tape.convention}"
+        when /date-field/
+          date_cells = cell.elementsForName("span")
+          if date_cells != nil
+            tape.date = date_cells.first.stringValue
+          end
+          # puts "found date = #{tape.date}"
+        when /downloads-field/
+          tape.downloads = cell.stringValue
+          # puts "found downloads = #{tape.downloads}"
         end
-        if details_uri
-          details_hash = fetch_tape_details details_uri
-          tape.url = details_hash['url']
-        end
-        @tapes << tape
       end
-      @tapes
+      if details_uri
+        details_hash = fetch_tape_details details_uri
+        tape.url = details_hash['url']
+      end
+      @tapes << tape
+    end
+    @tapes
   end
 
   def fetch_tape_details uri
@@ -96,9 +94,7 @@ class TapeFetcher
   end
 
   def log string
-    if @debug 
-      puts string
-    end
+    puts string if @debug
   end
 
 end

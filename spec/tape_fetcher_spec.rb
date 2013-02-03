@@ -19,9 +19,7 @@ describe "TapeFetcher" do
 
   it "has created a list of tapes from local html" do
   	html_path = File.expand_path("../tape_fetcher_test.html", __FILE__)
-  	# puts "html_path: #{html_path}"
   	html = File.read(html_path)
-  	# html_data = html.dataUsingEncoding(NSUTF8StringEncoding)
 	  tapes = @fetcher.convert_html_to_tapes html 
 	  tapes.first.speaker.should.equal @test_tape.speaker
   end
@@ -40,9 +38,7 @@ describe "TapeFetcher" do
 
   it "has created a list of tapes from local html, including urls" do
     html_path = File.expand_path("../tape_fetcher_test.html", __FILE__)
-    # puts "html_path: #{html_path}"
     html = File.read(html_path)
-    # html_data = html.dataUsingEncoding(NSUTF8StringEncoding)
     tapes = @fetcher.convert_html_to_tapes html 
     tapes.first.url.should.equal @test_tape.url
   end
