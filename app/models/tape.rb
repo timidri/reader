@@ -15,4 +15,21 @@ class Tape
   def name
     speaker + ( city == nil || city.empty? ? "" : " from #{city}" )
   end
+
+   def initWithCoder(decoder)
+    self.init
+    PROPERTIES.each { |prop|
+      value = decoder.decodeObjectForKey(prop.to_s)
+      self.send((prop.to_s + "=").to_s, value) if value
+    }
+    self
+  end
+
+    # called when saving an object to NSUserDefaults
+  def encodeWithCoder(encoder)
+    PROPERTIES.each { |prop|
+      encoder.encodeObject(self.send(prop), forKey: prop.to_s)
+    }
+  end
+
 end

@@ -3,7 +3,7 @@ class TapeFetcher
   def initialize
     @host="www.aaspeakers.org"
     @url="http://#{@host}/AA_Speaker_Tapes"
-    @debug=false
+    @debug=true
 	end
 
   def fetch_tapes

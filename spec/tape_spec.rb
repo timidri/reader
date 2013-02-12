@@ -16,4 +16,13 @@ describe "Tape" do
   	@tape.city = ""
     @tape.name.should == "Speaker"
   end
+
+  it "should be persistable" do
+  	tape_data = NSKeyedArchiver.archivedDataWithRootObject(@tape)
+    App::Persistence['test_tape'] = tape_data
+	tape_data = App::Persistence['test_tape']
+    tape = NSKeyedUnarchiver.unarchiveObjectWithData(tape_data)
+    @tape.name.should == tape.name
+   end
+
 end
