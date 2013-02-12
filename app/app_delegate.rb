@@ -3,8 +3,10 @@ class AppDelegate
   	@fetcher = TapeFetcher.new
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     @window.rootViewController = TapesController.alloc.initWithNibName(nil, bundle:nil)
-   	@window.rootViewController.tapes = load_tapes
+    @tapes = load_tapes
+   	@window.rootViewController.tapes = @tapes
     @window.makeKeyAndVisible
+    BW::Media.play_modal(@tapes[0].url)
     true
   end
 
