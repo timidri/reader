@@ -6,7 +6,6 @@ class AppDelegate
     @tapes = load_tapes
    	@window.rootViewController.tapes = @tapes
     @window.makeKeyAndVisible
-    BW::Media.play_modal(@tapes[0].url)
     true
   end
 

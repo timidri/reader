@@ -9,6 +9,7 @@ class TapesController < UIViewController
     @table.autoresizingMask = UIViewAutoresizingFlexibleHeight
     self.view.addSubview(@table)
     @table.dataSource = self
+    @table.setDelegate self
 
   end
 
@@ -23,6 +24,10 @@ class TapesController < UIViewController
     
     cell.textLabel.text = @tapes[indexPath.row].name
     cell
+  end
+
+  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
+      BW::Media.play_modal(@tapes[indexPath.row].url)
   end
 
 end
