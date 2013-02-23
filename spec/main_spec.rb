@@ -5,6 +5,6 @@ describe "Application 'reader'" do
 
   it "has one controller" do
     controller = @app.keyWindow.rootViewController
-    controller.is_a?(TapesController).should == true
+    controller.is_a?(UINavigationController).should == true
   end
 end

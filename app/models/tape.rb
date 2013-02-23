@@ -1,5 +1,5 @@
 class Tape
-  PROPERTIES = [:name, :url, :speaker, :city, :venue, :date, :downloads]
+  PROPERTIES = [:url, :speaker, :city, :venue, :date, :downloads]
   PROPERTIES.each do |prop|
     attr_accessor prop
   end
@@ -13,7 +13,8 @@ class Tape
   end
 
   def name
-    speaker + ( city == nil || city.empty? ? "" : " from #{city}" )
+    from_city = " from #{city}" if city && !city.empty?
+    "#{speaker}#{from_city}"
   end
 
    def initWithCoder(decoder)

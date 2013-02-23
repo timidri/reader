@@ -1,19 +1,19 @@
 describe "Tapes Controller" do
-  before do
-    @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
-    @window.rootViewController = TapesController.alloc.initWithNibName(nil, bundle:nil)
-    @window.rootViewController.tapes = []
-    5.times do |n|
-      tape = Tape.new(name: "Tape #{n}", speaker: "Speaker #{n}", url: "http://www.foo.bar/tape-#{n}") 
-      @window.rootViewController.tapes << tape
-    end
-    @window.makeKeyAndVisible
-  end
-  
   tests TapesController
+  
+  before do
+    controller.tapes = []
+ 
+    5.times do |n|
+      tape = Tape.new(speaker: "Speaker #{n}", city: "City #{n}") 
+      controller.tapes << tape
+    end
+    controller.table.reloadData
+
+  end
 
   it "should have title 'Tapes'" do
-     @window.rootViewController.title.should == "Tapes"
+    controller.title.should == "Tapes"
   end
 
   it "should have one UITableView" do
@@ -22,6 +22,9 @@ describe "Tapes Controller" do
 
   it "has one cell for every tape" do
     views(UITableViewCell).count.should == 5
-    view('Tape 1').should.not == nil
+  end
+
+  it "sets the name of eacht cell correctly" do
+    view("Speaker 1 from City 1").should != nil
   end
 end

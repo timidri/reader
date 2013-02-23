@@ -1,20 +1,20 @@
 class AppDelegate
+  attr_reader :tapes_controller
+
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-  	@fetcher = TapeFetcher.new
-    
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
-    tapes_controller = TapesController.alloc.initWithNibName(nil, bundle:nil)
+    @tapes_controller = TapesController.alloc.initWithNibName(nil, bundle:nil)
     nav_controller = UINavigationController.alloc.initWithRootViewController(tapes_controller)
     @window.rootViewController = nav_controller 
     
-    @tapes = load_tapes
-    tapes_controller.tapes = @tapes
+    @tapes_controller.tapes = load_tapes unless RUBYMOTION_ENV == 'test'
     
     @window.makeKeyAndVisible
     true
   end
 
   def load_tapes
+  	@fetcher = TapeFetcher.new
     if App::Persistence['tapes'] == nil
     	tapes = @fetcher.fetch_tapes
     	puts "saving #{tapes.count} tapes"

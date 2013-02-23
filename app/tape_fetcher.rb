@@ -27,7 +27,7 @@ class TapeFetcher
     page
   end
 
-  def convert_html_to_tapes html 
+  def convert_html_to_tapes html
     # puts "convert_html_to_tapes" 
     doc = Wakizashi::HTML(replaceHtmlEntities html)
     rows = doc.xpath("//div[@class='view-content view-content-Speaker-Tapes']//tr")

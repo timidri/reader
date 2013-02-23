@@ -1,6 +1,6 @@
 class TapesController < UIViewController
   include BubbleWrap::KVO
-  attr_accessor :tapes
+  attr_accessor :tapes, :table
 
   def viewDidLoad
     super
@@ -27,7 +27,7 @@ class TapesController < UIViewController
   end
 
   def tableView(tableView, didSelectRowAtIndexPath:indexPath)
-      BW::Media.play_modal(@tapes[indexPath.row].url)
+    BW::Media.play_modal(@tapes[indexPath.row].url)
   end
 
 end
