@@ -1,10 +1,15 @@
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
   	@fetcher = TapeFetcher.new
+    
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
-    @window.rootViewController = TapesController.alloc.initWithNibName(nil, bundle:nil)
+    tapes_controller = TapesController.alloc.initWithNibName(nil, bundle:nil)
+    nav_controller = UINavigationController.alloc.initWithRootViewController(tapes_controller)
+    @window.rootViewController = nav_controller 
+    
     @tapes = load_tapes
-   	@window.rootViewController.tapes = @tapes
+    tapes_controller.tapes = @tapes
+    
     @window.makeKeyAndVisible
     true
   end
