@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
-require 'motion-cocoapods'
-require 'wakizashi'
-require 'bubble-wrap'
-require 'bubble-wrap/media'
+require 'bundler'
+Bundler.require
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
