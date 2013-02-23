@@ -29,11 +29,11 @@ class TapesController < UIViewController
   def tableView(tableView, didSelectRowAtIndexPath:indexPath)
     #BW::Media.play_modal(@tapes[indexPath.row].url)
     tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    name = @tapes[indexPath.row].name
+    tape = @tapes[indexPath.row]
 
     controller = TapeDetailController.alloc.init    
-    controller.title = name
-    controller.label_text = name
+    controller.title = tape.name
+    controller.tape = tape
 
     self.navigationController.pushViewController(controller, animated: true)
   end

@@ -10,17 +10,22 @@ end
 
 class TapeDetailController < UIViewController
   stylesheet :tape_detail
-  attr_accessor :label_text
+  attr_accessor :tape
 
   layout :root do
     @label = subview(UILabel, :label)
   end
 
   def layoutDidLoad
-    @label.text = @label_text
+    @label.text = @tape.name
     @label.sizeToFit
     @label.center = [self.view.frame.size.width / 2,
       self.view.frame.size.height / 2]
+
+    BW::Media.play(@tape.url) do |media_player|
+      media_player.view.frame = [[10, 100], [100, 100]]
+      self.view.addSubview media_player.view
+    end
   end
 end
 
