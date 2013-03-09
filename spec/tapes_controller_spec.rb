@@ -24,7 +24,8 @@ describe "Tapes Controller" do
     views(UITableViewCell).count.should == 5
   end
 
-  it "sets the name of eacht cell correctly" do
+  it "sets the name of each cell correctly" do
     view("Speaker 1 from City 1").should != nil
   end
+
 end

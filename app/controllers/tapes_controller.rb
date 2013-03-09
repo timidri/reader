@@ -10,7 +10,17 @@ class TapesController < UIViewController
     self.view.addSubview(@table)
     @table.dataSource = self
     @table.setDelegate self
+  end
 
+  def tapes= newValue
+    @tapes = newValue
+    observe (App.delegate, :tapes) do |old, new|
+      puts "change observed, reloading tableView"
+      puts "tapes count = #{@tapes.count}"
+      @table.insertRowsAtIndexPaths([NSIndexPath.indexPathForRow(@tapes.count-1, inSection:0)], 
+        withRowAnimation:false)
+    end
+    @table.reloadData if @table
   end
 
   def tableView(tableView, numberOfRowsInSection: section)

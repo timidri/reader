@@ -1,38 +1,25 @@
 class TapeFetcher
 
+  attr_accessor :delegate
+
   def initialize
     @host="www.aaspeakers.org"
     @url="http://#{@host}/AA_Speaker_Tapes"
     @debug=true
 	end
 
-  def fetch_tapes
-    convert_html_to_tapes(fetch_html)
-  end
-
-  # fetch the html from the built-in url (not configurable from the outside)
-	def fetch_html
-    fetch_from_url @url
-  end
-
-  def fetch_from_url url
-    log "fetching from: #{url}"
-    error_ptr = Pointer.new(:object)
-    page = NSString.stringWithContentsOfURL(NSURL.URLWithString(url), 
-      encoding: NSUTF8StringEncoding, 
-      error:error_ptr)
-    if error_ptr[0] != nil 
-      NSLog("error reading from url: #{url}, error: #{error_ptr[0].description}")
+  def fetch_tapes (url=@url, &block)
+    log "fetching from url: #{url}" 
+    BubbleWrap::HTTP.get(@url) do |response|
+      convert_html_to_tapes (response.body.to_str, &block)
     end
-    page
   end
 
-  def convert_html_to_tapes html
+  def convert_html_to_tapes (html, &block)
     # puts "convert_html_to_tapes" 
     doc = Wakizashi::HTML(replaceHtmlEntities html)
     rows = doc.xpath("//div[@class='view-content view-content-Speaker-Tapes']//tr")
     # puts "rows size: #{rows.size}"
-    @tapes = []
     rows.each do |row| 
       headers = row.elementsForName("th")
       next if headers != nil # skip table headers row
@@ -69,27 +56,40 @@ class TapeFetcher
         end
       end
       if details_uri
-        details_hash = fetch_tape_details details_uri
+        if RUBYMOTION_ENV == 'test'
+          details_hash = { 'url' => "" }
+        else
+          details_hash = fetch_tape_details "http://#{@host}#{details_uri}"
+        end
         tape.url = details_hash['url']
       end
-      @tapes << tape
+      block.call tape
     end
-    @tapes
   end
 
-  def fetch_tape_details uri
-    url = "http://#{@host}#{uri}"
-    page = fetch_from_url url
-    doc = Wakizashi::HTML(replaceHtmlEntities page)
+  def fetch_tape_details url
+    hash = {}
+    log "fetching details from: #{url}"
+    BubbleWrap::HTTP.get(url) do |response|
+      page = response.body.to_str
+      hash = parse_tape_details page     
+    end
+    hash
+  end
+
+  def parse_tape_details html
+    doc = Wakizashi::HTML(replaceHtmlEntities html)
     download_link = doc.xpath("//a[text()='Download This Speaker Tape']").first
-    log "dl=#{download_link['href']}"
-    { 'url' => download_link['href'] }
+    hash = { 'url' => download_link['href'] }
+    hash
   end
 
   def replaceHtmlEntities htmlCode
     temp = NSMutableString.stringWithString(htmlCode)
-    temp.replaceOccurrencesOfString("&amp;", withString:"&", options:NSLiteralSearch, range:[0, temp.length])
-    temp.replaceOccurrencesOfString("&nbsp;", withString:" ", options:NSLiteralSearch, range:[0, temp.length])
+    temp.replaceOccurrencesOfString("&amp;", withString:"&", 
+      options:NSLiteralSearch, range:[0, temp.length])
+    temp.replaceOccurrencesOfString("&nbsp;", withString:" ", 
+      options:NSLiteralSearch, range:[0, temp.length])
     temp
   end
 
