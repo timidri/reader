@@ -4,9 +4,9 @@ class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     @tapes_controller = TapesController.alloc.initWithNibName(nil, bundle:nil)
-    nav_controller = UINavigationController.alloc.initWithRootViewController(tapes_controller)
-    @window.rootViewController = nav_controller 
-    @tapes_controller.tapes = load_tapes unless RUBYMOTION_ENV == 'test'
+    @nav_controller = UINavigationController.alloc.initWithRootViewController(tapes_controller)
+    @window.rootViewController = @nav_controller 
+    load_tapes unless RUBYMOTION_ENV == 'test'
     @window.makeKeyAndVisible
     true
   end
@@ -29,8 +29,8 @@ class AppDelegate
     else
     	puts "loading tapes..."
     	post_as_data = App::Persistence['tapes']
-    	@window.rootViewController.tapes = NSKeyedUnarchiver.unarchiveObjectWithData(post_as_data)
-    	puts "#{@window.rootViewController.tapes.count} loaded."
+    	@tapes_controller.tapes = NSKeyedUnarchiver.unarchiveObjectWithData(post_as_data)
+    	puts "#{@tapes_controller.tapes.count} loaded."
     end
   end
 

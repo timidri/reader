@@ -3,6 +3,7 @@ class TapesController < UIViewController
   attr_accessor :tapes, :table
 
   def viewDidLoad
+    # p "#{self.class} viewDidLoad"
     super
     self.title = "Tapes"
     @table = UITableView.alloc.initWithFrame(self.view.bounds)
@@ -13,6 +14,7 @@ class TapesController < UIViewController
   end
 
   def tapes= newValue
+    # p "#{self.class} tapes=, count: #{newValue.count}"
     @tapes = newValue
     observe (App.delegate, :tapes) do |old, new|
       puts "change observed, reloading tableView"
