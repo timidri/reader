@@ -1,12 +1,11 @@
 describe "Tapes Controller" do
   tests TapesController
-  
+
   before do
-    controller.tapes = []
- 
+    App.delegate.tapes = []
     5.times do |n|
-      tape = Tape.new(speaker: "Speaker #{n}", city: "City #{n}") 
-      controller.tapes << tape
+      tape = Tape.new(speaker: "Speaker #{n}", city: "City #{n}")
+      App.delegate.tapes << tape
     end
     controller.table.reloadData
 
