@@ -9,18 +9,18 @@ class TapeFetcher
 	end
 
   def fetch_tapes (url=@url, &block)
-    log "fetching from url: #{url}" 
+    log "fetching from url: #{url}"
     BubbleWrap::HTTP.get(@url) do |response|
       convert_html_to_tapes (response.body.to_str, &block)
     end
   end
 
   def convert_html_to_tapes (html, &block)
-    # puts "convert_html_to_tapes" 
+    # puts "convert_html_to_tapes"
     doc = Wakizashi::HTML(replaceHtmlEntities html)
     rows = doc.xpath("//div[@class='view-content view-content-Speaker-Tapes']//tr")
     # puts "rows size: #{rows.size}"
-    rows.each do |row| 
+    rows.each do |row|
       headers = row.elementsForName("th")
       next if headers != nil # skip table headers row
       tape = Tape.new
@@ -57,38 +57,38 @@ class TapeFetcher
       end
       if details_uri
         if RUBYMOTION_ENV == 'test'
-          details_hash = { 'url' => "" }
+          tape.url = ''
         else
-          details_hash = fetch_tape_details "http://#{@host}#{details_uri}"
+          fetch_tape_details "http://#{@host}#{details_uri}", tape
         end
-        tape.url = details_hash['url']
       end
       block.call tape
     end
   end
 
-  def fetch_tape_details url
-    hash = {}
+  def fetch_tape_details url, tape
     log "fetching details from: #{url}"
     BubbleWrap::HTTP.get(url) do |response|
       page = response.body.to_str
-      hash = parse_tape_details page     
+      hash = parse_tape_details page
+      puts hash[:url]
+      tape.url = hash[:url]
     end
-    hash
   end
 
   def parse_tape_details html
     doc = Wakizashi::HTML(replaceHtmlEntities html)
     download_link = doc.xpath("//a[text()='Download This Speaker Tape']").first
-    hash = { 'url' => download_link['href'] }
+    puts download_link['href']
+    hash = { :url => download_link['href'] }
     hash
   end
 
   def replaceHtmlEntities htmlCode
     temp = NSMutableString.stringWithString(htmlCode)
-    temp.replaceOccurrencesOfString("&amp;", withString:"&", 
+    temp.replaceOccurrencesOfString("&amp;", withString:"&",
       options:NSLiteralSearch, range:[0, temp.length])
-    temp.replaceOccurrencesOfString("&nbsp;", withString:" ", 
+    temp.replaceOccurrencesOfString("&nbsp;", withString:" ",
       options:NSLiteralSearch, range:[0, temp.length])
     temp
   end
