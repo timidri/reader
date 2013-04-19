@@ -1,9 +1,8 @@
 class TapesController < UIViewController
   include BubbleWrap::KVO
-  attr_accessor :tapes, :table
+  attr_accessor :table
 
   def viewDidLoad
-    # p "#{self.class} viewDidLoad"
     super
     self.title = "Tapes"
     @table = UITableView.alloc.initWithFrame(self.view.bounds)
@@ -11,39 +10,36 @@ class TapesController < UIViewController
     self.view.addSubview(@table)
     @table.dataSource = self
     @table.setDelegate self
+    observe (App.delegate, :tapes) do |old, new|
+      @table.reloadData if @table
+    end
   end
 
-  def tapes= newValue
-    # p "#{self.class} tapes=, count: #{newValue.count}"
-    @tapes = newValue
-    observe (App.delegate, :tapes) do |old, new|
-      puts "change observed, reloading tableView"
-      puts "tapes count = #{@tapes.count}"
-      @table.insertRowsAtIndexPaths([NSIndexPath.indexPathForRow(@tapes.count-1, inSection:0)], 
-        withRowAnimation:false)
-    end
-    @table.reloadData if @table
+  def viewDidUnload
+    App.delegate.remove_observer(self)
+  end
+
+  def tapes
+    App.delegate.tapes
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
-    @tapes ? @tapes.count : 0
+    tapes ? tapes.count : 0
   end
 
   def tableView(tableView, cellForRowAtIndexPath: indexPath)
     @reuseIdentifier ||= "CELL_IDENTIFIER"
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier)
     cell ||= UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
-    
-    cell.textLabel.text = @tapes[indexPath.row].name
+    cell.textLabel.text = tapes[indexPath.row].name
     cell
   end
 
   def tableView(tableView, didSelectRowAtIndexPath:indexPath)
-    #BW::Media.play_modal(@tapes[indexPath.row].url)
     tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    tape = @tapes[indexPath.row]
+    tape = tapes[indexPath.row]
 
-    controller = TapeDetailController.alloc.init    
+    controller = TapeDetailController.alloc.init
     controller.title = tape.name
     controller.tape = tape
 
