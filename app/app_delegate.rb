@@ -3,7 +3,7 @@ class AppDelegate
   attr_accessor :tapes
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
+    @window = Motion::Xray::XrayWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     @tapes_controller = TapesController.alloc.initWithNibName(nil, bundle:nil)
     @nav_controller = UINavigationController.alloc.initWithRootViewController(tapes_controller)
     @window.rootViewController = @nav_controller

@@ -5,30 +5,24 @@ class AudioPlayerView < UIView
     super
 
     if self
-      size = CGSizeMake(180, 50)
-
-      @playFromHTTPButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playFromHTTPButton.frame = CGRectMake((320  - size.width) /2, 60, size.width, size.height)
-      @playFromHTTPButton.addTarget(self, action:'playFromHTTPButtonTouched', forControlEvents: UIControlEventTouchUpInside)
-      @playFromHTTPButton.setTitle("Play from HTTP", forState: UIControlStateNormal)
-
-      @playFromLocalFileButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playFromLocalFileButton.frame = CGRectMake((320 - size.width) / 2, 120, size.width, size.height)
-      @playFromLocalFileButton.addTarget(self,  action: 'playFromLocalFileButtonTouched', forControlEvents: UIControlEventTouchUpInside)
-      @playFromLocalFileButton.setTitle("Play from Local File", forState:UIControlStateNormal)
-
-      @playButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playButton.frame = CGRectMake((320 - size.width) / 2, 350, size.width, size.height)
-      @playButton.addTarget(self, action: 'playButtonPressed', forControlEvents: UIControlEventTouchUpInside)
-
       @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
       @slider.continuous = true
       @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
 
-      self.addSubview @slider
-      self.addSubview @playButton
-      self.addSubview @playFromHTTPButton
-      #self.addSubview @playFromLocalFileButton
+      @toolbar = UIToolbar.alloc.init
+      @toolbar.tintColor = UIColor.blackColor
+      @toolbar.frame = self.frame
+
+      @playButton = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemPlay, target: self, action: "playButtonPressed")
+
+      @toolbar.items = [
+        UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil),
+        @playButton,
+        UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
+      ]
+      @toolbar.frame = [[0,0],[320,66]]
+
+      self.addSubview(@toolbar)
 
       self.setupTimer
       self.updateControls
@@ -60,9 +54,9 @@ class AudioPlayerView < UIView
     @slider.value = audioPlayer.progress
   end
 
-  def playFromHTTPButtonTouched
-    self.delegate.audioPlayerViewPlayFromHTTPSelected(self)
-  end
+  #def playFromHTTPButtonTouched
+    #self.delegate.audioPlayerViewPlayFromHTTPSelected(self)
+  #end
 
   def playFromLocalFileButtonTouched
     self.delegate.audioPlayerViewPlayFromLocalFileSelected(self)
