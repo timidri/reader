@@ -5,6 +5,7 @@ class AudioPlayerView < UIView
     super
 
     @tape = delegate.tape
+    self.backgroundColor = UIColor.clearColor
 
     @label = UILabel.new
     @label.text = @tape.name
@@ -42,6 +43,10 @@ class AudioPlayerView < UIView
       UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
     ]
     @toolbar.frame = [[0,0],[320,66]]
+
+    @volumeView = MPVolumeView.alloc.initWithFrame self.bounds
+    @volumeView.sizeToFit
+    self.addSubview @volumeView
 
     Motion::Layout.new do |layout|
       layout.view self
