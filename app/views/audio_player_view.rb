@@ -1,32 +1,59 @@
 class AudioPlayerView < UIView
   attr_accessor :delegate, :audioPlayer
 
-  def initWithFrame frame
+  def initWithFrame frame, withDelegate: delegate
     super
 
-    if self
-      @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
-      @slider.continuous = true
-      @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
+    @tape = delegate.tape
 
-      @toolbar = UIToolbar.alloc.init
-      @toolbar.tintColor = UIColor.blackColor
-      @toolbar.frame = self.frame
+    @label = UILabel.new
+    @label.text = @tape.name
+    @label.textColor = UIColor.whiteColor
+    @label.font = UIFont.boldSystemFontOfSize(25)
+    @label.lineBreakMode = NSLineBreakByWordWrapping
+    @label.numberOfLines = 0
+    @label.backgroundColor = UIColor.blackColor
+    @label.textAlignment = NSTextAlignmentCenter
+    @label.preferredMaxLayoutWidth = 200
 
-      @playButton = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemPlay, target: self, action: "playButtonPressed")
+    @sublabel = UILabel.new
+    @sublabel.text = @tape.venue
+    @sublabel.textColor = UIColor.whiteColor
+    @sublabel.font = UIFont.boldSystemFontOfSize(20)
+    @sublabel.lineBreakMode = NSLineBreakByWordWrapping
+    @sublabel.numberOfLines = 0
+    @sublabel.backgroundColor = UIColor.blackColor
+    @sublabel.textAlignment = NSTextAlignmentCenter
+    @sublabel.preferredMaxLayoutWidth = 200
 
-      @toolbar.items = [
-        UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil),
-        @playButton,
-        UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
-      ]
-      @toolbar.frame = [[0,0],[320,66]]
+    @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
+    @slider.continuous = true
+    @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
 
-      self.addSubview(@toolbar)
+    @toolbar = UIToolbar.alloc.init
+    @toolbar.tintColor = UIColor.blackColor
+    @toolbar.frame = self.frame
 
-      self.setupTimer
-      self.updateControls
+    @playButton = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemPlay, target: self, action: "playButtonPressed")
+
+    @toolbar.items = [
+      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil),
+      @playButton,
+      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
+    ]
+    @toolbar.frame = [[0,0],[320,66]]
+
+    Motion::Layout.new do |layout|
+      layout.view self
+      layout.subviews "label" => @label, "sublabel" => @sublabel, "toolbar" => @toolbar
+      layout.metrics "top" => 40
+      layout.vertical "|-top-[label]-[sublabel]-[toolbar(==66)]|"
+      layout.horizontal "|[toolbar]|"
     end
+
+    self.setupTimer
+    self.updateControls
+
     self
   end
 
