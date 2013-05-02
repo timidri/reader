@@ -5,7 +5,7 @@ class AudioPlayerView < UIView
     super
 
     @tape = delegate.tape
-    self.backgroundColor = UIColor.clearColor
+    self.backgroundColor = UIColor.lightGrayColor
 
     @label = UILabel.new
     @label.text = @tape.name
@@ -27,9 +27,9 @@ class AudioPlayerView < UIView
     @sublabel.textAlignment = NSTextAlignmentCenter
     @sublabel.preferredMaxLayoutWidth = 200
 
-    @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
-    @slider.continuous = true
-    @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
+    #@slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
+    #@slider.continuous = true
+    #@slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
 
     @toolbar = UIToolbar.alloc.init
     @toolbar.tintColor = UIColor.blackColor
@@ -37,29 +37,42 @@ class AudioPlayerView < UIView
 
     @playButton = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemPlay, target: self, action: "playButtonPressed")
 
-    @toolbar.items = [
-      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil),
-      @playButton,
-      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
-    ]
-    @toolbar.frame = [[0,0],[320,66]]
+    @toolbar = UIView.new
+    @toolbar.layer.borderColor = UIColor.blackColor
+    @toolbar.layer.borderWidth = 3.0
+    @bgLayer = gradient
+    @toolbar.layer.insertSublayer(@bgLayer, atIndex:0)
 
     @volumeView = MPVolumeView.alloc.initWithFrame self.bounds
-    @volumeView.sizeToFit
-    self.addSubview @volumeView
 
     Motion::Layout.new do |layout|
       layout.view self
       layout.subviews "label" => @label, "sublabel" => @sublabel, "toolbar" => @toolbar
       layout.metrics "top" => 40
-      layout.vertical "|-top-[label]-[sublabel]-[toolbar(==66)]|"
+      layout.vertical "|-top-[label]-[sublabel]-[toolbar(66)]|"
       layout.horizontal "|[toolbar]|"
     end
 
     self.setupTimer
     self.updateControls
-
     self
+  end
+
+  def layoutSubviews
+    super
+    # @toolbar frame is set by autolayout
+    @bgLayer.frame = @toolbar.bounds
+  end
+
+  def gradient
+    colorOne = UIColor.colorWithRed(80/225.0, green: 80/225.0, blue: 80/225.0, alpha: 1.0)
+    colorTwo = UIColor.colorWithRed(24/225.0, green: 25/225.0, blue: 25/225.0, alpha: 1.0)
+    colors = [colorOne.CGColor, colorTwo.CGColor]
+    locations = [0.0, 1.0]
+    headerLayer = CAGradientLayer.layer
+    headerLayer.colors = colors
+    headerLayer.locations = locations
+    headerLayer
   end
 
   def sliderChanged

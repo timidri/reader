@@ -9,6 +9,8 @@ class TapeDetailController < UIViewController
     @audioPlayerView = AudioPlayerView.alloc.initWithFrame(self.view.bounds, withDelegate: self)
     @audioPlayerView.audioPlayer = @audioPlayer
     self.view = @audioPlayerView
+
+    @audioPlayer.pause
   end
 end
 
