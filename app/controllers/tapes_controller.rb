@@ -40,7 +40,7 @@ class TapesController < UIViewController
     tape = tapes[indexPath.row]
 
     controller = TapeDetailController.alloc.init
-    controller.title = tape.name
+    controller.title = ""
     controller.tape = tape
 
     self.navigationController.pushViewController(controller, animated: true)
