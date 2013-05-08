@@ -1,38 +1,64 @@
 class AudioPlayerView < UIView
   attr_accessor :delegate, :audioPlayer
 
-  def initWithFrame frame
+  def initWithFrame frame, withDelegate: delegate
     super
 
-    if self
-      size = CGSizeMake(180, 50)
+    @tape = delegate.tape
+    self.backgroundColor = UIColor.clearColor
 
-      @playFromHTTPButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playFromHTTPButton.frame = CGRectMake((320  - size.width) /2, 60, size.width, size.height)
-      @playFromHTTPButton.addTarget(self, action:'playFromHTTPButtonTouched', forControlEvents: UIControlEventTouchUpInside)
-      @playFromHTTPButton.setTitle("Play from HTTP", forState: UIControlStateNormal)
+    @label = UILabel.new
+    @label.text = @tape.name
+    @label.textColor = UIColor.whiteColor
+    @label.font = UIFont.boldSystemFontOfSize(25)
+    @label.lineBreakMode = NSLineBreakByWordWrapping
+    @label.numberOfLines = 0
+    @label.backgroundColor = UIColor.blackColor
+    @label.textAlignment = NSTextAlignmentCenter
+    @label.preferredMaxLayoutWidth = 200
 
-      @playFromLocalFileButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playFromLocalFileButton.frame = CGRectMake((320 - size.width) / 2, 120, size.width, size.height)
-      @playFromLocalFileButton.addTarget(self,  action: 'playFromLocalFileButtonTouched', forControlEvents: UIControlEventTouchUpInside)
-      @playFromLocalFileButton.setTitle("Play from Local File", forState:UIControlStateNormal)
+    @sublabel = UILabel.new
+    @sublabel.text = @tape.venue
+    @sublabel.textColor = UIColor.whiteColor
+    @sublabel.font = UIFont.boldSystemFontOfSize(20)
+    @sublabel.lineBreakMode = NSLineBreakByWordWrapping
+    @sublabel.numberOfLines = 0
+    @sublabel.backgroundColor = UIColor.blackColor
+    @sublabel.textAlignment = NSTextAlignmentCenter
+    @sublabel.preferredMaxLayoutWidth = 200
 
-      @playButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      @playButton.frame = CGRectMake((320 - size.width) / 2, 350, size.width, size.height)
-      @playButton.addTarget(self, action: 'playButtonPressed', forControlEvents: UIControlEventTouchUpInside)
+    @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
+    @slider.continuous = true
+    @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
 
-      @slider = UISlider.alloc.initWithFrame(CGRectMake(20, 290, 280, 20))
-      @slider.continuous = true
-      @slider.addTarget(self, action: 'sliderChanged', forControlEvents: UIControlEventValueChanged)
+    @toolbar = UIToolbar.alloc.init
+    @toolbar.tintColor = UIColor.blackColor
+    @toolbar.frame = self.frame
 
-      self.addSubview @slider
-      self.addSubview @playButton
-      self.addSubview @playFromHTTPButton
-      #self.addSubview @playFromLocalFileButton
+    @playButton = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemPlay, target: self, action: "playButtonPressed")
 
-      self.setupTimer
-      self.updateControls
+    @toolbar.items = [
+      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil),
+      @playButton,
+      UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target: nil, action: nil)
+    ]
+    @toolbar.frame = [[0,0],[320,66]]
+
+    @volumeView = MPVolumeView.alloc.initWithFrame self.bounds
+    @volumeView.sizeToFit
+    self.addSubview @volumeView
+
+    Motion::Layout.new do |layout|
+      layout.view self
+      layout.subviews "label" => @label, "sublabel" => @sublabel, "toolbar" => @toolbar
+      layout.metrics "top" => 40
+      layout.vertical "|-top-[label]-[sublabel]-[toolbar(==66)]|"
+      layout.horizontal "|[toolbar]|"
     end
+
+    self.setupTimer
+    self.updateControls
+
     self
   end
 
@@ -60,9 +86,9 @@ class AudioPlayerView < UIView
     @slider.value = audioPlayer.progress
   end
 
-  def playFromHTTPButtonTouched
-    self.delegate.audioPlayerViewPlayFromHTTPSelected(self)
-  end
+  #def playFromHTTPButtonTouched
+    #self.delegate.audioPlayerViewPlayFromHTTPSelected(self)
+  #end
 
   def playFromLocalFileButtonTouched
     self.delegate.audioPlayerViewPlayFromLocalFileSelected(self)
