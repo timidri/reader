@@ -36,7 +36,7 @@ class AppDelegate
         Dispatch::Queue.main.sync do
           observedTapes << tape
           puts 'tape added'
-          sleep 1
+          # sleep 1
         end
       end
       runLoop.run

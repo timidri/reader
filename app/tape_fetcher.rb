@@ -10,7 +10,7 @@ class TapeFetcher
 
   def fetch_tapes (url=@url, &block)
     log "fetching from url: #{url}"
-    BubbleWrap::HTTP.get(@url) do |response|
+    BW::HTTP.get(@url) do |response|
       convert_html_to_tapes (response.body.to_str, &block)
     end
   end
@@ -68,7 +68,7 @@ class TapeFetcher
 
   def fetch_tape_details url, tape
     log "fetching details from: #{url}"
-    BubbleWrap::HTTP.get(url) do |response|
+    BW::HTTP.get(url) do |response|
       page = response.body.to_str
       hash = parse_tape_details page
       puts hash[:url]
